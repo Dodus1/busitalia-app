@@ -41,7 +41,8 @@ jobs:
     - name: Compila l'APK senza demoni di cache
       run: |
         cd android
-        ./gradlew assembleDebug --no-daemon --clean
+        ./gradlew clean
+        ./gradlew assembleDebug --no-daemon
 
     - name: Carica l'APK finale nei download
       uses: actions/upload-artifact@v4
