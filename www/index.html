@@ -2,13 +2,9 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Busitalia Veneto - Home</title>
     <style>
-a, button, .accordion-row, .action-card, .zoom-text {
-    outline: none;
-    -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
-}
         /* Caricamento delle varianti locali del font Jost */
         @font-face {
             font-family: 'Jost';
@@ -44,6 +40,14 @@ a, button, .accordion-row, .action-card, .zoom-text {
             padding: 0;
             font-family: 'Jost', -apple-system, BlinkMacSystemFont, sans-serif;
             -webkit-font-smoothing: antialiased;
+            
+            /* Disattiva il flash azzurro/grigio nativo al tocco su mobile */
+            -webkit-tap-highlight-color: transparent !important;
+        }
+
+        a, button, .accordion-row, .action-card, .zoom-text, .full-width-card, .nav-item, .header-icon-btn {
+            outline: none;
+            -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
         }
 
         body {
@@ -56,13 +60,16 @@ a, button, .accordion-row, .action-card, .zoom-text {
             padding-bottom: 90px;
         }
 
-        /* Header Rosso Busitalia */
+        /* Header Rosso Busitalia con estensione sotto la barra di stato mobile */
         header {
             background-color: #a70c30;
-            padding: 24px 16px 18px 16px;
+            padding: 16px 16px 18px 16px;
             display: flex;
             flex-direction: column;
             gap: 16px;
+            
+            /* Gestione dello spazio sicuro superiore per i dispositivi con fotocamera integrata nello schermo */
+            padding-top: calc(env(safe-area-inset-top, 0px) + 12px);
         }
 
         .logo-container {
@@ -242,7 +249,7 @@ a, button, .accordion-row, .action-card, .zoom-text {
             gap: 2px;
         }
 
-        /* NUOVO: Contenitore Carosello Avvisi */
+        /* Contenitore Carosello Avvisi */
         .notice-carousel-container {
             display: flex;
             gap: 12px;
@@ -337,7 +344,7 @@ a, button, .accordion-row, .action-card, .zoom-text {
             object-fit: cover;
         }
 
-        /* Bottom Navigation Bar Bilanciata */
+        /* Bottom Navigation Bar Bilanciata con gestione safe area inferiore per smartphone moderni */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -349,7 +356,7 @@ a, button, .accordion-row, .action-card, .zoom-text {
             border-top: 1px solid #e4e4e5;
             display: flex;
             justify-content: space-around;
-            padding: 8px 0 10px 0;
+            padding: 8px 0 calc(env(safe-area-inset-bottom, 0px) + 10px) 0;
             z-index: 100;
         }
 
