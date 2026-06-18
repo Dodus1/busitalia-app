@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Busitalia Veneto - I miei ticket</title>
+    <style>
+        /* Caricamento delle varianti locali del font Jost */
+a, button, .accordion-row, .action-card, .zoom-text {
+    outline: none;
+    -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+}
+        @font-face {
+            font-family: 'Jost';
+            src: url('Jost-Regular.ttf') format('truetype');
+            font-weight: 400;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'Jost';
+            src: url('Jost-Medium.ttf') format('truetype');
+            font-weight: 500;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Jost';
+            src: url('Jost-SemiBold.ttf') format('truetype');
+            font-weight: 600;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Jost';
+            src: url('Jost-Bold.ttf') format('truetype');
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Jost', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: #ffffff;
+            color: #1c1c1e;
+            max-width: 480px;
+            margin: 0 auto;
+            position: relative;
+            min-height: 100vh;
+            padding-bottom: 90px;
+        }
+
+        /* Top Header Navigation */
+        header {
+            background-color: white;
+            padding-top: 24px;
+        }
+
+        .header-title {
+            text-align: center;
+            font-size: 19px;
+            font-weight: 700;
+            color: #a70c30;
+            margin-bottom: 22px;
+            letter-spacing: -0.2px;
+        }
+
+        .tabs-container {
+            display: flex;
+            width: 100%;
+            border-bottom: 1px solid #e4e4e5;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding-bottom: 14px;
+            font-size: 14px;
+            cursor: pointer;
+            position: relative;
+            letter-spacing: 0.2px;
+        }
+
+        .tab.active {
+            font-weight: 700;
+            color: #a70c30;
+        }
+
+        .tab:not(.active) {
+            font-weight: 500;
+            color: #767676;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3.5px;
+            background-color: #a70c30;
+            border-radius: 2px 2px 0 0;
+        }
+
+        /* Fascia grigia a tutta larghezza */
+        .section-bar {
+            background-color: #f1f3f6;
+            padding: 10px 16px;
+            font-size: 14.5px;
+            font-weight: 600;
+            color: #1c1c1e;
+            letter-spacing: -0.1px;
+        }
+
+        .content-container {
+            padding: 14px 16px 18px 16px;
+        }
+
+        /* Ticket Card */
+        .ticket-card {
+            background-color: white;
+            border: 1px solid #e4e4e5;
+            border-radius: 12px;
+            padding: 16px 16px 14px 16px;
+        }
+
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .ticket-logo {
+            height: 22px;
+            width: auto;
+        }
+
+        /* CORRETTO: Applicati i codici colore esatti forniti */
+        .status-badge {
+            background-color: #daf1dd;
+            color: #055a4a;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 3px 12px;
+            border-radius: 5px;
+            letter-spacing: 0.1px;
+        }
+
+        .ticket-name {
+            font-size: 16.5px;
+            font-weight: 700;
+            color: #a70c30;
+            margin-bottom: 12px;
+            letter-spacing: -0.1px;
+        }
+
+        .divider {
+            height: 1px;
+            background-color: #e4e4e5;
+            margin: 12px 0;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #2c2c2e;
+            font-weight: 400;
+        }
+
+        .info-row img {
+            width: 17px;
+            height: 17px;
+        }
+
+        .info-row span {
+            color: #48484a;
+        }
+
+        .info-row strong {
+            color: #1c1c1e;
+            font-weight: 700;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14.5px;
+            color: #48484a;
+            font-weight: 400;
+            padding-top: 2px;
+        }
+
+        .price-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1c1c1e;
+        }
+
+        /* Altri dispositivi Accordion */
+        .device-accordion {
+            background-color: white;
+            padding: 14px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .device-info-left {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .device-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1c1c1e;
+        }
+
+        .device-count {
+            font-size: 13.5px;
+            font-weight: 400;
+            color: #48484a;
+        }
+
+        .accordion-arrow {
+            width: 14px;
+            height: 14px;
+            opacity: 0.8;
+        }
+
+        /* Bottom Navigation Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            background-color: white;
+            border-top: 1px solid #e4e4e5;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0 10px 0;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #7c7c80;
+            font-size: 11px;
+            font-weight: 500;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .nav-item img {
+            width: 24px;
+            height: 24px;
+        }
+
+        .nav-item.active {
+            color: #a70c30;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-title">I miei ticket</div>
+        <div class="tabs-container">
+            <div class="tab active">DISPONIBILI</div>
+            <div class="tab">SCADUTI</div>
+        </div>
+    </header>
+
+    <main>
+        <div class="section-bar">Ticket attivi</div>
+        
+        <div class="content-container">
+            <a href="biglietto.html" style="text-decoration: none; display: block;">
+                <div class="ticket-card">
+                    <div class="ticket-header">
+                        <img class="ticket-logo" src="ticketlogo.jpg" alt="Busitalia Logo">
+                        <span class="status-badge">Attivo</span>
+                    </div>
+                    
+                    <div class="ticket-name">MENS. URB. TU2 STU</div>
+                    
+                    <div class="divider"></div>
+                    
+                    <div class="info-row">
+                        <img src="orologio.jpg" alt="Clock Icon">
+                        <span>Valido fino al: <strong>17/06/2026</strong></span>
+                    </div>
+                    
+                    <div class="divider"></div>
+                    
+                    <div class="price-row">
+                        <span>Costo</span>
+                        <span class="price-value">37,40 €</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="section-bar">Ticket attivati su altri dispositivi</div>
+        
+        <div class="device-accordion">
+            <div class="device-info-left">
+                <span class="device-name">Dispositivo 1</span>
+                <span class="device-count">1 ticket disponibile</span>
+            </div>
+            <img class="accordion-arrow" src="frecciagiu.jpg" alt="Arrow Down">
+        </div>
+    </main>
+
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <img src="homedisattivo.jpg" alt="Home Icon">
+            Home
+        </a>
+        <a href="#" class="nav-item">
+            <img src="acquista.jpg" alt="Acquista Icon">
+            Acquista
+        </a>
+        <a href="#" class="nav-item active">
+            <img src="ticketattivo.jpg" alt="I miei ticket Icon">
+            I miei ticket
+        </a>
+        <a href="#" class="nav-item">
+            <img src="profilo.jpg" alt="Profilo Icon">
+            Profilo
+        </a>
+    </nav>
+
+</body>
+</html>

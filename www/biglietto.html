@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Busitalia Veneto - Ticket Attivo</title>
+    <style>
+        /* Caricamento locale del font Jost per massima accuratezza rispetto all'app */
+        @font-face {
+            font-family: 'Jost';
+            src: url('Jost-Regular.ttf') format('truetype');
+            font-weight: 400;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'Jost';
+            src: url('Jost-Medium.ttf') format('truetype');
+            font-weight: 500;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Jost';
+            src: url('Jost-SemiBold.ttf') format('truetype');
+            font-weight: 600;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Jost';
+            src: url('Jost-Bold.ttf') format('truetype');
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Jost', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: #2e9e59; /* Verde Busitalia */
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            padding-bottom: 35px;
+        }
+
+        /* Top Nav Bar nativa */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            padding: 18px 16px;
+            color: white;
+            position: relative;
+        }
+
+        .back-arrow {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .top-bar-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 19px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+
+        /* Contenitore Principale Bianco */
+        .ticket-container {
+            background-color: #f6f6f6;
+            border-radius: 12px;
+            margin: 0 14px;
+            padding: 18px 14px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Intestazione Ticket con Loghi e scritte */
+        .brand-header {
+            margin-bottom: 22px;
+            padding-left: 2px;
+        }
+
+        .brand-logo {
+            height: 24px;
+            width: auto;
+            display: block;
+        }
+
+        .ticket-main-title {
+            font-size: 21px;
+            font-weight: 700;
+            color: #a70c30; /* Rosso istituzionale Busitalia */
+            margin-top: 14px;
+            letter-spacing: -0.2px;
+        }
+
+        .ticket-sub-title {
+            font-size: 14.5px;
+            color: #727274;
+            font-weight: 400;
+            margin-top: 1px;
+        }
+
+        /* Accordion Struttura e Spaziature */
+        .accordion-group {
+            margin-bottom: 12px;
+        }
+
+        .accordion-row {
+            background-color: #ececed;
+            border-radius: 10px;
+            padding: 13px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            transition: border-radius 0.2s ease;
+        }
+
+        .accordion-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 15.5px;
+            font-weight: 600;
+            color: #1c1c1e;
+        }
+
+        .accordion-left img {
+            width: 22px;
+            height: 22px;
+        }
+
+        .accordion-arrow {
+            width: 14px;
+            height: 14px;
+            transition: transform 0.2s ease;
+        }
+
+        .accordion-panel {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            background-color: #ececed;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+
+        /* Modifiche dinamiche all'apertura */
+        .accordion-group.is-open .accordion-row {
+            border-bottom-left-radius: 0px;
+            border-bottom-right-radius: 0px;
+            padding-bottom: 6px;
+        }
+
+        /* Informazioni Tessera Layout Interno */
+        .info-tessera-layout {
+            display: flex;
+            padding: 14px 16px 20px 16px;
+            gap: 18px;
+            align-items: flex-start;
+        }
+
+        .tessera-foto-container {
+            width: 95px;
+            flex-shrink: 0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .tessera-foto {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+
+        .tessera-dati-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tessera-nome {
+            font-size: 19px;
+            font-weight: 700;
+            color: #1c1c1e;
+            line-height: 1.2;
+            margin-bottom: 2px;
+        }
+
+        .tessera-cf {
+            font-size: 14px;
+            font-weight: 400;
+            color: #48484a;
+            margin-bottom: 12px;
+        }
+
+        .tessera-label {
+            font-size: 13px;
+            color: #7c7c80;
+            margin-bottom: 1px;
+        }
+
+        .tessera-valore {
+            font-size: 15.5px;
+            font-weight: 500;
+            color: #1c1c1e;
+            margin-bottom: 10px;
+        }
+
+        .tessera-valore.scadenza {
+            margin-bottom: 0;
+            font-weight: 600;
+        }
+
+        /* Controllo e Validazione Area QR */
+        .validation-content {
+            padding: 0 16px 4px 16px;
+        }
+
+        .validation-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 14px 0 10px 0;
+        }
+
+        .qr-code {
+            width: 220px;
+            height: 220px;
+            margin-bottom: 18px;
+            object-fit: contain;
+        }
+
+        .zoom-text {
+            color: #a70c30;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: underline;
+            margin-bottom: 24px;
+            cursor: pointer;
+            letter-spacing: -0.1px;
+        }
+
+        /* Barra Orario Live e Lucchetto */
+        .live-info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            font-size: 19px;
+            font-weight: 500;
+            color: #a70c30;
+            padding: 0 4px;
+        }
+
+        .live-time, .live-code {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .live-info-row img {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Banner Verde di Validità */
+        .validity-banner {
+            background-color: #2e9e59;
+            color: white;
+            width: 100%;
+            text-align: center;
+            padding: 11px 0;
+            border-radius: 8px;
+            font-size: 14.5px;
+            font-weight: 400;
+            margin-top: 16px;
+        }
+
+        .validity-banner strong {
+            font-weight: 600;
+        }
+
+        /* Sezione Dettagli e Metadati Inferiore */
+        .bottom-details {
+            margin-top: 20px;
+            padding: 0 2px;
+        }
+
+        .meta-label {
+            font-size: 13.5px;
+            color: #7c7c80;
+            margin-bottom: 2px;
+        }
+
+        .meta-value {
+            font-size: 15.5px;
+            font-weight: 600;
+            color: #1c1c1e;
+            margin-bottom: 14px;
+        }
+
+        .horizontal-line {
+            height: 1px;
+            background-color: #e4e4e5;
+            margin: 14px 0;
+        }
+
+        .flex-meta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .flex-meta-row .price-label {
+            font-size: 15.5px;
+            color: #1c1c1e;
+            font-weight: 400;
+        }
+
+        .flex-meta-row .price-value {
+            font-size: 17px;
+            font-weight: 700;
+            color: #1c1c1e;
+        }
+
+        .ticket-code-label {
+            font-size: 14px;
+            color: #7c7c80;
+        }
+
+        .ticket-code-value {
+            font-size: 14px;
+            color: #1c1c1e;
+            font-weight: 500;
+        }
+
+        /* Overlay Ingrandimento QR a Schermo Intero */
+        .qr-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+
+        .qr-overlay-img {
+            width: 82%;
+            max-width: 320px;
+            height: auto;
+            object-fit: contain;
+            background-color: white;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 35px;
+        }
+
+        .qr-close-btn {
+            background-color: #a70c30;
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+	a, button, .accordion-row, .action-card, .zoom-text {
+    outline: none;
+    -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+}
+    </style>
+</head>
+<body>
+    
+    <div class="top-bar">
+        <a href="ticket.html"><img class="back-arrow" src="frecciabiancadietro.png" alt="Back"></a>
+        <div class="top-bar-title">Ticket attivo</div>
+    </div>
+
+    <main class="ticket-container">
+        
+        <div class="brand-header">
+            <img class="brand-logo" src="ticketlogo.png" alt="Busitalia Logo">
+            <div class="ticket-main-title">MENS. URB. TU2 STU</div>
+            <div class="ticket-sub-title">MENS. URB. TU2 STU</div>
+        </div>
+
+        <div class="accordion-group" id="group-tessera">
+            <div class="accordion-row" onclick="toggleAccordion('group-tessera', 'panel-tessera', 'arrow-tessera')">
+                <div class="accordion-left">
+                    <img src="abbonamenti.png" alt="Card Icon">
+                    <span>Informazioni tessera</span>
+                </div>
+                <img id="arrow-tessera" class="accordion-arrow" src="frecciarossa.png" alt="Freccia">
+            </div>
+            
+            <div id="panel-tessera" class="accordion-panel">
+                <div class="info-tessera-layout">
+                    <div class="tessera-foto-container">
+                        <img class="tessera-foto" src="foto.jpeg" alt="Foto Profilo">
+                    </div>
+                    <div class="tessera-dati-container">
+                        <div class="tessera-nome">DOMENICO DI ZOZZA</div>
+                        <div class="tessera-cf">DZZDNC06L02D122C</div>
+                        
+                        <div class="tessera-label">Tesserino n.</div>
+                        <div class="tessera-valore">TW1674</div>
+                        
+                        <div class="tessera-label">Scadenza:</div>
+                        <div class="tessera-valore scadenza">31/10/2028</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-group" id="group-validazione">
+            <div class="accordion-row" onclick="toggleAccordion('group-validazione', 'panel-validazione', 'arrow-validazione')">
+                <div class="accordion-left">
+                    <img src="biglietti.png" alt="Validation Icon">
+                    <span>Controllo e validazione</span>
+                </div>
+                <img id="arrow-validazione" class="accordion-arrow" src="frecciarossa.png" alt="Freccia">
+            </div>
+            
+            <div id="panel-validazione" class="accordion-panel">
+                <div class="validation-content">
+                    <div class="validation-box">
+                        <img class="qr-code" src="qr.png" alt="QR Code di Validazione">
+                        
+                        <div class="zoom-text" onclick="apriZoomQR()">Ingrandisci QRCode</div>
+                        
+                        <div class="live-info-row">
+                            <div class="live-time">
+                                <img src="orologiorosso.png" alt="Clock">
+                                <span id="ora-reale">--:--:--</span>
+                            </div>
+                            <div class="live-code">
+                                <img src="lucchetto.png" alt="Lock">
+                                <span>924</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="validity-banner">
+            Valido dal <strong>18/05/2026</strong> a <strong>17/06/2026</strong>
+        </div>
+
+        <div class="bottom-details">
+            <div class="meta-label">Emesso il:</div>
+            <div class="meta-value">18/05/2026 - 15:40</div>
+            
+            <div class="horizontal-line"></div>
+            
+            <div class="flex-meta-row">
+                <span class="price-label">Costo</span>
+                <span class="price-value">37,40 €</span>
+            </div>
+            
+            <div class="horizontal-line"></div>
+            
+            <div class="flex-meta-row">
+                <span class="ticket-code-label">Codice Ticket:</span>
+                <span class="ticket-code-value">7406/360917</span>
+            </div>
+        </div>
+
+    </main>
+
+    <div id="qrOverlay" class="qr-overlay">
+        <img class="qr-overlay-img" src="qr.png" alt="QR Code Ingrandito">
+        <button class="qr-close-btn" onclick="chiudiZoomQR()">Chiudi</button>
+    </div>
+
+    <script>
+        function toggleAccordion(groupId, panelId, arrowId) {
+            const group = document.getElementById(groupId);
+            const panel = document.getElementById(panelId);
+            const arrow = document.getElementById(arrowId);
+            
+            if (panel.style.maxHeight && panel.style.maxHeight !== "0px") {
+                panel.style.maxHeight = "0px";
+                group.classList.remove('is-open');
+                arrow.style.transform = "rotate(0deg)";
+            } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+                group.classList.add('is-open');
+                arrow.style.transform = "rotate(180deg)";
+            }
+        }
+
+        function apriZoomQR() {
+            document.getElementById('qrOverlay').style.display = 'flex';
+        }
+
+        function chiudiZoomQR() {
+            document.getElementById('qrOverlay').style.display = 'none';
+        }
+
+        // Funzione per aggiornare l'orario in tempo reale (hh:mm:ss)
+        function avviaOrologio() {
+            const elementoOra = document.getElementById('ora-reale');
+            setInterval(() => {
+                const adesso = new Date();
+                const ore = String(adesso.getHours()).padStart(2, '0');
+                const minuti = String(adesso.getMinutes()).padStart(2, '0');
+                const secondi = String(adesso.getSeconds()).padStart(2, '0');
+                elementoOra.textContent = `${ore}:${minuti}:${secondi}`;
+            }, 1000);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            avviaOrologio();
+            
+            // Di default teniamo l'accordion della validazione aperto
+            const initGroup = document.getElementById('group-validazione');
+            const initPanel = document.getElementById('panel-validazione');
+            initPanel.style.maxHeight = initPanel.scrollHeight + "px";
+            initGroup.classList.add('is-open');
+            document.getElementById('arrow-validazione').style.transform = "rotate(180deg)";
+        });
+    </script>
+</body>
+</html>
