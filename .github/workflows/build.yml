@@ -1,9 +1,10 @@
-name: Build Android APK
+name: Build Android App
 
 on:
   push:
     branches: [ main, master ]
-  workflow_dispatch:
+  pull_request:
+    branches: [ main, master ]
 
 jobs:
   build:
@@ -13,39 +14,38 @@ jobs:
     - name: Checkout del codice
       uses: actions/checkout@v4
 
-    - name: Configura Node.js
+    - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: 18
+        node-version: '18'
 
-    - name: Configura Java (richiesto per Android)
+    - name: Setup Java JDK
       uses: actions/setup-java@v4
       with:
         distribution: 'zulu'
         java-version: '17'
 
-    - name: Inizializza il progetto e installa Capacitor
+    - name: Installazione dipendenze
       run: |
         npm init -y
-        npm install @capacitor/core@5 @capacitor/cli@5 @capacitor/android@5 @capacitor/assets
+        npm install @capacitor/core@5 @capacitor/cli@5 @capacitor/android@5 @capacitor/assets @capacitor/status-bar@5 @capacitor/splash-screen@5
 
-    - name: Aggiungi la piattaforma Android
+    - name: Aggiungi piattaforma Android
       run: npx cap add android
 
-    - name: Genera Icone e Splash Screen
-      run: npx capacitor-assets generate
+    - name: Genera Icone e Splash
+      run: npx capacitor-assets generate --android --assetPath assets
 
-    - name: Sincronizza i file web
+    - name: Sincronizza Capacitor
       run: npx cap sync android
 
-    - name: Compila l'APK senza demoni di cache
+    - name: Build dell'applicazione (Generazione APK)
       run: |
         cd android
-        ./gradlew clean
-        ./gradlew assembleDebug --no-daemon
+        ./gradlew assembleDebug
 
-    - name: Carica l'APK finale nei download
+    - name: Carica l'APK generato nei file della build
       uses: actions/upload-artifact@v4
       with:
-        name: Busitalia-Veneto-APK
+        name: app-debug-apk
         path: android/app/build/outputs/apk/debug/app-debug.apk
