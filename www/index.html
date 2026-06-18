@@ -2,10 +2,14 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Busitalia Veneto - Ticket Attivo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Busitalia Veneto - Home</title>
     <style>
-        /* Caricamento locale del font Jost per massima accuratezza rispetto all'app */
+a, button, .accordion-row, .action-card, .zoom-text {
+    outline: none;
+    -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+}
+        /* Caricamento delle varianti locali del font Jost */
         @font-face {
             font-family: 'Jost';
             src: url('Jost-Regular.ttf') format('truetype');
@@ -40,512 +44,477 @@
             padding: 0;
             font-family: 'Jost', -apple-system, BlinkMacSystemFont, sans-serif;
             -webkit-font-smoothing: antialiased;
-            
-            /* Disattiva il flash azzurro/grigio nativo al tocco su mobile */
-            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: #2e9e59; /* Verde Busitalia */
+            background-color: #ffffff;
+            color: #1c1c1e;
             max-width: 480px;
             margin: 0 auto;
-            min-height: 100vh;
-            padding-bottom: 35px;
-            
-            /* Gestione dello spazio sicuro superiore per i dispositivi con fotocamera integrata nello schermo */
-            padding-top: env(safe-area-inset-top, 0px);
-        }
-
-        /* Top Nav Bar nativa */
-        .top-bar {
-            display: flex;
-            align-items: center;
-            padding: 18px 16px;
-            color: white;
             position: relative;
+            min-height: 100vh;
+            padding-bottom: 90px;
         }
 
-        .back-arrow {
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-            z-index: 10;
+        /* Header Rosso Busitalia */
+        header {
+            background-color: #a70c30;
+            padding: 24px 16px 18px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
 
-        .top-bar-title {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 19px;
-            font-weight: 600;
-            letter-spacing: -0.3px;
+        .logo-container {
+            display: flex;
+            justify-content: flex-start;
         }
 
-        /* Contenitore Principale Bianco */
-        .ticket-container {
-            background-color: #f6f6f6;
-            border-radius: 12px;
-            margin: 0 14px;
-            padding: 18px 14px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        }
-
-        /* Intestazione Ticket con Loghi e scritte */
-        .brand-header {
-            margin-bottom: 22px;
-            padding-left: 2px;
-        }
-
-        .brand-logo {
-            height: 24px;
+        .logo {
+            height: 70px;
             width: auto;
-            display: block;
         }
 
-        .ticket-main-title {
-            font-size: 21px;
-            font-weight: 700;
-            color: #a70c30; /* Rosso istituzionale Busitalia */
-            margin-top: 14px;
-            letter-spacing: -0.2px;
+        /* Search & Icons Row */
+        .header-bottom-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
         }
 
-        .ticket-sub-title {
-            font-size: 14.5px;
-            color: #727274;
-            font-weight: 400;
-            margin-top: 1px;
+        /* Barra di ricerca nativa */
+        .search-container {
+            position: relative;
+            flex: 1;
         }
 
-        /* Accordion Struttura e Spaziature */
-        .accordion-group {
-            margin-bottom: 12px;
+        .search-container img {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            opacity: 0.7;
         }
 
-        .accordion-row {
-            background-color: #ececed;
+        .search-input {
+            width: 100%;
+            padding: 11px 14px 11px 44px;
+            border: none;
             border-radius: 10px;
-            padding: 13px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            user-select: none;
-            transition: border-radius 0.2s ease;
-        }
-
-        .accordion-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 15.5px;
-            font-weight: 600;
+            font-size: 15px;
+            font-weight: 400;
             color: #1c1c1e;
+            background-color: white;
         }
 
-        .accordion-left img {
+        .search-input::placeholder {
+            color: #767676;
+        }
+
+        /* Bottoni Icona Header circolari bianchi */
+        .header-icons {
+            display: flex;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .header-icon-btn {
+            background: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .header-icon-btn img {
             width: 22px;
             height: 22px;
         }
 
-        .accordion-arrow {
-            width: 14px;
-            height: 14px;
-            transition: transform 0.2s ease;
+        /* Main Content Spaziature */
+        main {
+            padding: 20px 16px;
         }
 
-        .accordion-panel {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.2s ease-out;
-            background-color: #ececed;
-            border-bottom-left-radius: 10px;
-            border-bottom-right-radius: 10px;
+        section {
+            margin-bottom: 24px;
         }
 
-        /* Modifiche dinamiche all'apertura */
-        .accordion-group.is-open .accordion-row {
-            border-bottom-left-radius: 0px;
-            border-bottom-right-radius: 0px;
-            padding-bottom: 6px;
-        }
-
-        /* Informazioni Tessera Layout Interno */
-        .info-tessera-layout {
-            display: flex;
-            padding: 14px 16px 20px 16px;
-            gap: 18px;
-            align-items: flex-start;
-        }
-
-        .tessera-foto-container {
-            width: 95px;
-            flex-shrink: 0;
-            border-radius: 6px;
-            overflow: hidden;
-        }
-
-        .tessera-foto {
-            width: 100%;
-            height: auto;
-            display: block;
-            object-fit: cover;
-        }
-
-        .tessera-dati-container {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .tessera-nome {
+        h2 {
             font-size: 19px;
             font-weight: 700;
+            margin-bottom: 14px;
             color: #1c1c1e;
-            line-height: 1.2;
-            margin-bottom: 2px;
+            letter-spacing: -0.2px;
         }
 
-        .tessera-cf {
-            font-size: 14px;
-            font-weight: 400;
-            color: #48484a;
-            margin-bottom: 12px;
+        /* Viaggia con noi Grid Cards */
+        .grid-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
         }
 
-        .tessera-label {
-            font-size: 13px;
-            color: #7c7c80;
-            margin-bottom: 1px;
+        .action-card {
+            background: white;
+            border: 1px solid #e4e4e5;
+            border-radius: 12px;
+            padding: 16px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center; 
+            gap: 10px;
+            cursor: pointer;
         }
 
-        .tessera-valore {
-            font-size: 15.5px;
+        .action-card img {
+            width: 32px;
+            height: 32px;
+        }
+
+        .action-card span {
+            font-size: 15px;
             font-weight: 500;
             color: #1c1c1e;
-            margin-bottom: 10px;
         }
 
-        .tessera-valore.scadenza {
-            margin-bottom: 0;
-            font-weight: 600;
-        }
-
-        /* Controllo e Validazione Area QR */
-        .validation-content {
-            padding: 0 16px 4px 16px;
-        }
-
-        .validation-box {
+        /* Fermate e orari Card estesa */
+        .full-width-card {
+            background: white;
+            border: 1px solid #e4e4e5;
+            border-radius: 12px;
+            padding: 16px;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            padding: 14px 0 10px 0;
-        }
-
-        .qr-code {
-            width: 220px;
-            height: 220px;
-            margin-bottom: 18px;
-            object-fit: contain;
-        }
-
-        .zoom-text {
-            color: #a70c30;
-            font-size: 15px;
-            font-weight: 600;
-            text-decoration: underline;
-            margin-bottom: 24px;
+            justify-content: space-between;
             cursor: pointer;
-            letter-spacing: -0.1px;
         }
 
-        /* Barra Orario Live e Lucchetto */
-        .live-info-row {
+        .card-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-left img {
+            width: 22px;
+            height: 22px;
+        }
+
+        .card-left span {
+            font-size: 15.5px;
+            font-weight: 700;
+            color: #a70c30;
+        }
+
+        .arrow-right {
+            width: 14px;
+            height: 14px;
+            opacity: 0.8;
+        }
+
+        /* Avvisi Struttura Intestazione */
+        .section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            width: 100%;
-            font-size: 19px;
-            font-weight: 500;
-            color: #a70c30;
-            padding: 0 4px;
-        }
-
-        .live-time, .live-code {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .live-info-row img {
-            width: 20px;
-            height: 20px;
-        }
-
-        /* Banner Verde di Validità */
-        .validity-banner {
-            background-color: #2e9e59;
-            color: white;
-            width: 100%;
-            text-align: center;
-            padding: 11px 0;
-            border-radius: 8px;
-            font-size: 14.5px;
-            font-weight: 400;
-            margin-top: 16px;
-        }
-
-        .validity-banner strong {
-            font-weight: 600;
-        }
-
-        /* Sezione Dettagli e Metadati Inferiore */
-        .bottom-details {
-            margin-top: 20px;
-            padding: 0 2px;
-        }
-
-        .meta-label {
-            font-size: 13.5px;
-            color: #7c7c80;
-            margin-bottom: 2px;
-        }
-
-        .meta-value {
-            font-size: 15.5px;
-            font-weight: 600;
-            color: #1c1c1e;
             margin-bottom: 14px;
         }
 
-        .horizontal-line {
-            height: 1px;
-            background-color: #e4e4e5;
-            margin: 14px 0;
+        .section-header h2 {
+            margin-bottom: 0;
         }
 
-        .flex-meta-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .flex-meta-row .price-label {
-            font-size: 15.5px;
-            color: #1c1c1e;
-            font-weight: 400;
-        }
-
-        .flex-meta-row .price-value {
-            font-size: 17px;
+        .vedi-tutti {
+            color: #a70c30;
             font-weight: 700;
+            text-decoration: underline;
+            font-size: 14.5px;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        /* NUOVO: Contenitore Carosello Avvisi */
+        .notice-carousel-container {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            padding-bottom: 4px;
+        }
+
+        .notice-carousel-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Avvisi Contenitore informativo singolo */
+        .notice-card {
+            background: white;
+            border: 1px solid #e4e4e5;
+            border-radius: 12px;
+            padding: 16px;
+            flex: 0 0 100%; /* Prende tutta la larghezza dello schermo */
+            scroll-snap-align: start;
+        }
+
+        .notice-date {
+            font-size: 13.5px;
+            color: #48484a;
+            font-weight: 400;
+            margin-bottom: 6px;
+        }
+
+        .notice-title {
+            font-size: 15.5px;
+            font-weight: 700;
+            line-height: 1.35;
+            margin-bottom: 8px;
             color: #1c1c1e;
         }
 
-        .ticket-code-label {
+        .notice-body {
             font-size: 14px;
-            color: #7c7c80;
+            color: #48484a;
+            font-weight: 400;
+            line-height: 1.4;
         }
 
-        .ticket-code-value {
-            font-size: 14px;
-            color: #1c1c1e;
-            font-weight: 500;
+        /* Carousel Indicatori Circolari */
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 14px;
         }
 
-        /* Overlay Ingrandimento QR a Schermo Intero */
-        .qr-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
+        .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: #d1d1d6;
+            transition: background-color 0.2s ease;
+        }
+
+        .dot.active {
+            background-color: #a70c30;
+        }
+
+        /* Sezione Carosello Banner Orizzontale */
+        .promo-container {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            padding-bottom: 4px;
+            scrollbar-width: none;
+        }
+        
+        .promo-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .promo-banner {
+            flex: 0 0 86%;
+            border-radius: 12px;
+            overflow: hidden;
+            height: 140px;
+            border: 1px solid #e4e4e5;
+            scroll-snap-align: start;
+        }
+
+        .promo-banner img {
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.95);
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            padding: 20px;
+            object-fit: cover;
         }
 
-        .qr-overlay-img {
-            width: 82%;
-            max-width: 320px;
-            height: auto;
-            object-fit: contain;
+        /* Bottom Navigation Bar Bilanciata */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
             background-color: white;
-            padding: 12px;
-            border-radius: 12px;
-            margin-bottom: 35px;
+            border-top: 1px solid #e4e4e5;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0 10px 0;
+            z-index: 100;
         }
 
-        .qr-close-btn {
-            background-color: #a70c30;
-            color: white;
-            border: none;
-            padding: 12px 40px;
-            font-size: 15px;
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #7c7c80;
+            font-size: 11px;
+            font-weight: 500;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .nav-item img {
+            width: 24px;
+            height: 24px;
+        }
+
+        .nav-item.active {
+            color: #a70c30;
             font-weight: 600;
-            border-radius: 25px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
     </style>
 </head>
 <body>
-    
-    <div class="top-bar">
-        <a href="ticket.html"><img class="back-arrow" src="frecciabiancadietro.png" alt="Back"></a>
-        <div class="top-bar-title">Ticket attivo</div>
-    </div>
 
-    <main class="ticket-container">
+    <header>
+        <div class="logo-container">
+            <img class="logo" src="logo.png" alt="Busitalia Logo">
+        </div>
         
-        <div class="brand-header">
-            <img class="brand-logo" src="ticketlogo.png" alt="Busitalia Logo">
-            <div class="ticket-main-title">MENS. URB. TU2 STU</div>
-            <div class="ticket-sub-title">MENS. URB. TU2 STU</div>
-        </div>
-
-        <div class="accordion-group" id="group-tessera">
-            <div class="accordion-row" onclick="toggleAccordion('group-tessera', 'panel-tessera', 'arrow-tessera')">
-                <div class="accordion-left">
-                    <img src="abbonamenti.png" alt="Card Icon">
-                    <span>Informazioni tessera</span>
-                </div>
-                <img id="arrow-tessera" class="accordion-arrow" src="frecciarossa.png" alt="Freccia">
+        <div class="header-bottom-row">
+            <div class="search-container">
+                <img src="cerca.jpg" alt="Search Icon">
+                <input type="text" class="search-input" placeholder="Dove vuoi andare?">
             </div>
-            
-            <div id="panel-tessera" class="accordion-panel">
-                <div class="info-tessera-layout">
-                    <div class="tessera-foto-container">
-                        <img class="tessera-foto" src="foto.jpeg" alt="Foto Profilo">
-                    </div>
-                    <div class="tessera-dati-container">
-                        <div class="tessera-nome">Domenico Di Zozza</div>
-                        <div class="tessera-cf">DZZDNC06L02D122C</div>
-                        
-                        <div class="tessera-label">Tesserino n.</div>
-                        <div class="tessera-valore">TW1674</div>
-                        
-                        <div class="tessera-label">Scadenza:</div>
-                        <div class="tessera-valore scadenza">31/10/2028</div>
-                    </div>
+            <div class="header-icons">
+                <button class="header-icon-btn"><img src="homealto.jpg" alt="Home Icon"></button>
+                <button class="header-icon-btn"><img src="carrello.jpg" alt="Cart Icon"></button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section>
+            <h2>Viaggia con noi</h2>
+            <div class="grid-buttons">
+                <div class="action-card">
+                    <img src="biglietti.png" alt="Biglietti Icon">
+                    <span>Biglietti</span>             
+                </div>
+                <div class="action-card">
+                    <img src="abbonamenti.png" alt="Abbonamenti Icon">
+                    <span>Abbonamenti</span>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="accordion-group" id="group-validazione">
-            <div class="accordion-row" onclick="toggleAccordion('group-validazione', 'panel-validazione', 'arrow-validazione')">
-                <div class="accordion-left">
-                    <img src="biglietti.png" alt="Validation Icon">
-                    <span>Controllo e validazione</span>
+        <section>
+            <h2>Fermate e orari</h2>
+            <div class="full-width-card">
+                <div class="card-left">
+                    <img src="calendario.jpg" alt="Calendar Icon">
+                    <span>Consulta gli orari</span>
                 </div>
-                <img id="arrow-validazione" class="accordion-arrow" src="frecciarossa.png" alt="Freccia">
+                <img class="arrow-right" src="freccia.jpg" alt="Arrow Right">
+            </div>
+        </section>
+
+        <section>
+            <div class="section-header">
+                <h2>Avvisi</h2>
+                <a href="#" class="vedi-tutti">Vedi tutti ></a>
             </div>
             
-            <div id="panel-validazione" class="accordion-panel">
-                <div class="validation-content">
-                    <div class="validation-box">
-                        <img class="qr-code" src="qr.png" alt="QR Code di Validazione">
-                        
-                        <div class="zoom-text" onclick="apriZoomQR()">Ingrandisci QRCode</div>
-                        
-                        <div class="live-info-row">
-                            <div class="live-time">
-                                <img src="orologiorosso.png" alt="Clock">
-                                <span id="ora-reale">--:--:--</span>
-                            </div>
-                            <div class="live-code">
-                                <img src="lucchetto.png" alt="Lock">
-                                <span>924</span>
-                            </div>
-                        </div>
-                    </div>
+            <div class="notice-carousel-container" id="noticeCarousel">
+                <div class="notice-card">
+                    <div class="notice-date">18 giugno 2026</div>
+                    <div class="notice-title">NOVENTA PADOVANA | "NOVENTA SUMMERTIME CHOIR CONCERT"</div>
+                    <div class="notice-body">Deviazioni Linea E073 PADOVA — NOVENTA PADOVANA - STRA'</div>
+                </div>
+                <div class="notice-card">
+                    <div class="notice-date">17 giugno 2026</div>
+                    <div class="notice-title">Modifica percorso Linea extraurbana 601</div>
+                    <div class="notice-body">da lunedì 22/06/2026 fino a termine lavori la linea 601 subirà variazioni di percorso</div>
+                </div>
+                <div class="notice-card">
+                    <div class="notice-date">16 giugno 2026</div>
+                    <div class="notice-title">PADOVA | Variazioni servizi per festività locali</div>
+                    <div class="notice-body">Si invitano i passeggeri a verificare gli orari aggiornati sul sito ufficiale.</div>
                 </div>
             </div>
-        </div>
 
-        <div class="validity-banner">
-            Valido dal <strong>18/05/2026</strong> a <strong>17/06/2026</strong>
-        </div>
+            <div class="carousel-dots" id="noticeDots">
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </section>
 
-        <div class="bottom-details">
-            <div class="meta-label">Emesso il:</div>
-            <div class="meta-value">18/05/2026 - 15:40</div>
-            
-            <div class="horizontal-line"></div>
-            
-            <div class="flex-meta-row">
-                <span class="price-label">Costo</span>
-                <span class="price-value">37,40 €</span>
+        <section style="margin-bottom: 0;">
+            <div class="promo-container" id="promoCarousel">
+                <div class="promo-banner">
+                    <img src="quibus.jpeg" alt="QuiBus Promo">
+                </div>
+                <div class="promo-banner">
+                    <img src="marcopolo.jpeg" alt="Collegamento Aeroporto Promo">
+                </div>
             </div>
             
-            <div class="horizontal-line"></div>
-            
-            <div class="flex-meta-row">
-                <span class="ticket-code-label">Codice Ticket:</span>
-                <span class="ticket-code-value">7406/360917</span>
+            <div class="carousel-dots" style="margin-top: 10px;" id="promoDots">
+                <div class="dot active"></div>
+                <div class="dot"></div>
             </div>
-        </div>
-
+        </section>
     </main>
 
-    <div id="qrOverlay" class="qr-overlay">
-        <img class="qr-overlay-img" src="qr.png" alt="QR Code Ingrandito">
-        <button class="qr-close-btn" onclick="chiudiZoomQR()">Chiudi</button>
-    </div>
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active">
+            <img src="home.jpg" alt="Home Icon">
+            Home
+        </a>
+        <a href="#" class="nav-item">
+            <img src="acquista.jpg" alt="Acquista Icon">
+            Acquista
+        </a>
+        <a href="ticket.html" class="nav-item">
+            <img src="ticket.jpg" alt="I miei ticket Icon">
+            I miei ticket
+        </a>
+        <a href="#" class="nav-item">
+            <img src="profilo.jpg" alt="Profilo Icon">
+            Profilo
+        </a>
+    </nav>
 
     <script>
-        function toggleAccordion(groupId, panelId, arrowId) {
-            const group = document.getElementById(groupId);
-            const panel = document.getElementById(panelId);
-            const arrow = document.getElementById(arrowId);
-            
-            if (panel.style.maxHeight && panel.style.maxHeight !== "0px") {
-                panel.style.maxHeight = "0px";
-                group.classList.remove('is-open');
-                arrow.style.transform = "rotate(0deg)";
-            } else {
-                panel.style.maxHeight = panel.scrollHeight + "px";
-                group.classList.add('is-open');
-                arrow.style.transform = "rotate(180deg)";
-            }
+        function setupCarousel(carouselId, dotsContainerId) {
+            const carousel = document.getElementById(carouselId);
+            const dots = document.getElementById(dotsContainerId).getElementsByClassName('dot');
+
+            carousel.addEventListener('scroll', () => {
+                const width = carousel.offsetWidth;
+                const scrollLeft = carousel.scrollLeft;
+                // Calcola l'indice dell'elemento visibile correntemente
+                const activeIndex = Math.round(scrollLeft / width);
+                
+                // Aggiorna la classe active sui pallini
+                for (let i = 0; i < dots.length; i++) {
+                    if (i === activeIndex) {
+                        dots[i].classList.add('active');
+                    } else {
+                        dots[i].classList.remove('active');
+                    }
+                }
+            });
         }
 
-        function apriZoomQR() {
-            document.getElementById('qrOverlay').style.display = 'flex';
-        }
-
-        function chiudiZoomQR() {
-            document.getElementById('qrOverlay').style.display = 'none';
-        }
-
-        // Funzione per aggiornare l'orario in tempo reale (hh:mm:ss)
-        function avviaOrologio() {
-            const elementoOra = document.getElementById('ora-reale');
-            setInterval(() => {
-                const adesso = new Date();
-                const ore = String(adesso.getHours()).padStart(2, '0');
-                const minuti = String(adesso.getMinutes()).padStart(2, '0');
-                const secondi = String(adesso.getSeconds()).padStart(2, '0');
-                elementoOra.textContent = `${ore}:${minuti}:${secondi}`;
-            }, 1000);
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            avviaOrologio();
-            
-            // Di default teniamo l'accordion della validazione aperto
-            const initGroup = document.getElementById('group-validazione');
-            const initPanel = document.getElementById('panel-validazione');
-            initPanel.style.maxHeight = initPanel.scrollHeight + "px";
-            initGroup.classList.add('is-open');
-            document.getElementById('arrow-validazione').style.transform = "rotate(180deg)";
-        });
+        // Inizializza i controlli sui due caroselli differenti
+        setupCarousel('noticeCarousel', 'noticeDots');
+        setupCarousel('promoCarousel', 'promoDots');
     </script>
+
 </body>
 </html>
