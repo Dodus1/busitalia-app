@@ -1,0 +1,6 @@
+{
+  "appId": "it.busitalia.veneto",
+  "appName": "Busitalia Veneto",
+  "webDir": "www",
+  "bundledWebRuntime": false
+}
