@@ -2,14 +2,10 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Busitalia Veneto - I miei ticket</title>
     <style>
         /* Caricamento delle varianti locali del font Jost */
-a, button, .accordion-row, .action-card, .zoom-text {
-    outline: none;
-    -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
-}
         @font-face {
             font-family: 'Jost';
             src: url('Jost-Regular.ttf') format('truetype');
@@ -44,6 +40,12 @@ a, button, .accordion-row, .action-card, .zoom-text {
             padding: 0;
             font-family: 'Jost', -apple-system, BlinkMacSystemFont, sans-serif;
             -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent !important;
+        }
+
+        a, button, .accordion-row, .action-card, .zoom-text, .tab, .device-accordion, .nav-item {
+            outline: none;
+            -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
         }
 
         body {
@@ -56,10 +58,9 @@ a, button, .accordion-row, .action-card, .zoom-text {
             padding-bottom: 90px;
         }
 
-        /* Top Header Navigation */
         header {
             background-color: white;
-            padding-top: 24px;
+            padding-top: calc(env(safe-area-inset-top, 0px) + 16px);
         }
 
         .header-title {
@@ -108,7 +109,6 @@ a, button, .accordion-row, .action-card, .zoom-text {
             border-radius: 2px 2px 0 0;
         }
 
-        /* Fascia grigia a tutta larghezza */
         .section-bar {
             background-color: #f1f3f6;
             padding: 10px 16px;
@@ -122,7 +122,6 @@ a, button, .accordion-row, .action-card, .zoom-text {
             padding: 14px 16px 18px 16px;
         }
 
-        /* Ticket Card */
         .ticket-card {
             background-color: white;
             border: 1px solid #e4e4e5;
@@ -142,7 +141,6 @@ a, button, .accordion-row, .action-card, .zoom-text {
             width: auto;
         }
 
-        /* CORRETTO: Applicati i codici colore esatti forniti */
         .status-badge {
             background-color: #daf1dd;
             color: #055a4a;
@@ -206,7 +204,6 @@ a, button, .accordion-row, .action-card, .zoom-text {
             color: #1c1c1e;
         }
 
-        /* Altri dispositivi Accordion */
         .device-accordion {
             background-color: white;
             padding: 14px 16px;
@@ -240,7 +237,6 @@ a, button, .accordion-row, .action-card, .zoom-text {
             opacity: 0.8;
         }
 
-        /* Bottom Navigation Bar */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -252,7 +248,7 @@ a, button, .accordion-row, .action-card, .zoom-text {
             border-top: 1px solid #e4e4e5;
             display: flex;
             justify-content: space-around;
-            padding: 8px 0 10px 0;
+            padding: 8px 0 calc(env(safe-area-inset-bottom, 0px) + 10px) 0;
             z-index: 100;
         }
 
