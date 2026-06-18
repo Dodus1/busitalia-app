@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Busitalia Veneto - Ticket Attivo</title>
     <style>
         /* Caricamento locale del font Jost per massima accuratezza rispetto all'app */
@@ -40,6 +40,9 @@
             padding: 0;
             font-family: 'Jost', -apple-system, BlinkMacSystemFont, sans-serif;
             -webkit-font-smoothing: antialiased;
+            
+            /* Disattiva il flash azzurro/grigio nativo al tocco su mobile */
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -48,6 +51,9 @@
             margin: 0 auto;
             min-height: 100vh;
             padding-bottom: 35px;
+            
+            /* Gestione dello spazio sicuro superiore per i dispositivi con fotocamera integrata nello schermo */
+            padding-top: env(safe-area-inset-top, 0px);
         }
 
         /* Top Nav Bar nativa */
@@ -387,10 +393,6 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-	a, button, .accordion-row, .action-card, .zoom-text {
-    outline: none;
-    -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
-}
     </style>
 </head>
 <body>
@@ -423,7 +425,7 @@
                         <img class="tessera-foto" src="foto.jpeg" alt="Foto Profilo">
                     </div>
                     <div class="tessera-dati-container">
-                        <div class="tessera-nome">DOMENICO DI ZOZZA</div>
+                        <div class="tessera-nome">Domenico Di Zozza</div>
                         <div class="tessera-cf">DZZDNC06L02D122C</div>
                         
                         <div class="tessera-label">Tesserino n.</div>
