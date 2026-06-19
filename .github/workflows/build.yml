@@ -33,6 +33,9 @@ jobs:
     - name: Aggiungi piattaforma Android
       run: npx cap add android
 
+    - name: Genera Icone e Splash
+      run: npx capacitor-assets generate --android --assetPath assets
+
     - name: Forza Splash Screen Bianco Nativo
       run: |
         echo '<?xml version="1.0" encoding="utf-8"?>
@@ -44,13 +47,10 @@ jobs:
             </style>
             <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
                 <item name="windowSplashScreenBackground">#FFFFFF</item>
-                <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_foreground</item>
+                <item name="windowSplashScreenAnimatedIcon">@drawable/splash</item>
                 <item name="postSplashScreenTheme">@style/AppTheme</item>
             </style>
         </resources>' > android/app/src/main/res/values/styles.xml
-
-    - name: Genera Icone e Splash
-      run: npx capacitor-assets generate --android --assetPath assets
 
     - name: Sincronizza Capacitor
       run: npx cap sync android
