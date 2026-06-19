@@ -36,16 +36,18 @@ jobs:
     - name: Genera Icone e Splash
       run: npx capacitor-assets generate --android --assetPath assets
 
-    - name: Genera file styles.xml (Splash corretto e Schermo Intero per Notch)
+    - name: Forza configurazione stili e puntamento a splash.png
       run: |
         mkdir -p android/app/src/main/res/values
+        mkdir -p android/app/src/main/res/values-v31
+        
+        # Sostituisce lo styles.xml principale (Abilita il tutto schermo sotto il notch)
         echo '<?xml version="1.0" encoding="utf-8"?>
         <resources>
             <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
                 <item name="colorPrimary">#FFFFFF</item>
                 <item name="colorPrimaryDark">#FFFFFF</item>
                 <item name="colorAccent">#000000</item>
-                
                 <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
                 <item name="android:windowTranslucentStatus">true</item>
                 <item name="android:statusBarColor">@android:color/transparent</item>
@@ -57,6 +59,16 @@ jobs:
                 <item name="postSplashScreenTheme">@style/AppTheme</item>
             </style>
         </resources>' > android/app/src/main/res/values/styles.xml
+
+        # Sostituisce lo styles.xml specifico per Android 12+ (Rimuove l icona app e mette lo splash)
+        echo '<?xml version="1.0" encoding="utf-8"?>
+        <resources>
+            <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
+                <item name="windowSplashScreenBackground">#FFFFFF</item>
+                <item name="windowSplashScreenAnimatedIcon">@drawable/splash</item>
+                <item name="postSplashScreenTheme">@style/AppTheme</item>
+            </style>
+        </resources>' > android/app/src/main/res/values-v31/styles.xml
 
     - name: Sincronizza Capacitor
       run: npx cap sync android
