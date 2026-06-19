@@ -39,23 +39,22 @@ jobs:
       - name: Sincronizza Capacitor
         run: npx cap sync android
 
-      - name: FORZA BG BIANCO NATIVO E RIMUOVI ICONA BLU
+      - name: RE-SET COMPLETAMENTE PULITO DELLE RISORSE
         run: |
-          # 1. Rimuoviamo i file XML v31 e v24 che Android usa per forzare l'icona rotonda blu
+          # 1. Rimuoviamo le cartelle v31 e v24 per togliere l'icona blu e lo sfondo nero/grigio
           rm -rf android/app/src/main/res/values-v31
           rm -rf android/app/src/main/res/drawable-v24
           
-          # 2. Ci assicuriamo che le cartelle base esistano
           mkdir -p android/app/src/main/res/values
           mkdir -p android/app/src/main/res/drawable
           
-          # 3. Copiamo la tua splash.png originale da 2732x2732 dentro le risorse drawable
+          # 2. Copiamo la splash.png originale pulita nei drawable
           cp assets/splash.png android/app/src/main/res/drawable/splash.png
 
-          # 4. Creiamo un background nativo: Sfondo bianco totale + logo Busitalia centrato perfettamente
+          # 3. Creiamo lo splash_background (Sfondo bianco + logo busitalia centrato)
           cat << 'EOF' > android/app/src/main/res/drawable/splash_background.xml
           <?xml version="1.0" encoding="utf-8"?>
-          <layer-list xmlns:android="http://schemas.github.com/apk/res/android">
+          <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
               <item android:drawable="@android:color/white" />
               <item>
                   <bitmap
@@ -65,7 +64,7 @@ jobs:
           </layer-list>
           EOF
 
-          # 5. Riscriviamo lo stili.xml forzando il background personalizzato ed eliminando i conflitti di Capacitor
+          # 4. Riscriviamo lo stili.xml gestendo il notch in modo nativo ed evitando i crash Java
           cat << 'EOF' > android/app/src/main/res/values/styles.xml
           <?xml version="1.0" encoding="utf-8"?>
           <resources>
@@ -86,9 +85,6 @@ jobs:
               </style>
           </resources>
           EOF
-
-          # 6. Iniettiamo il comportamento Edge-to-Edge direttamente nella MainActivity.java nativa via codice
-          find android/app/src/main/java -name "MainActivity.java" -exec sed -i '/super.onCreate/i \        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {\n            getWindow().getAttributes().layoutInDisplayCutoutMode = android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;\n        }' {} \;
 
       - name: Build dell'applicazione
         run: |
