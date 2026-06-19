@@ -33,15 +33,23 @@ jobs:
       - name: Aggiungi piattaforma Android
         run: npx cap add android
 
-      - name: Genera Icone e Splash
+      - name: Genera Icone e Splash Automatici
         run: npx capacitor-assets generate --android --assetPath assets
 
-      - name: Forza configurazione stili e puntamento corretto
+      - name: Sincronizza Capacitor
+        run: npx cap sync android
+
+      - name: FORZA SPLASH.PNG E EDGE-TO-EDGE (Overriding Totale)
         run: |
           mkdir -p android/app/src/main/res/values
           mkdir -p android/app/src/main/res/values-v31
           mkdir -p android/app/src/main/res/drawable
           
+          # Copia l'immagine splash.png corretta (generata a schermo intero) dentro la risorsa splash nativa
+          # Questo distrugge l'icona blu dell'app e la rimpiazza con il logo Busitalia su sfondo bianco
+          cp android/app/src/main/res/drawable-xxxhdpi/splash.png android/app/src/main/res/drawable/splash.png
+
+          # 1. Configura il tema principale (Rende l'HTML immersivo sotto il notch)
           cat << 'EOF' > android/app/src/main/res/values/styles.xml
           <?xml version="1.0" encoding="utf-8"?>
           <resources>
@@ -61,13 +69,15 @@ jobs:
           </resources>
           EOF
 
+          # 2. Crea il layer-list per evitare il ritaglio circolare di Android 12+
           cat << 'EOF' > android/app/src/main/res/drawable/splash_native.xml
           <?xml version="1.0" encoding="utf-8"?>
           <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-              <item android:gravity="center" android:drawable="@drawable/splash" />
+              <item android:gravity="fill" android:drawable="@drawable/splash" />
           </layer-list>
           EOF
 
+          # 3. Specifica lo stile per Android 12+ usando il layer-list con gravity fill
           cat << 'EOF' > android/app/src/main/res/values-v31/styles.xml
           <?xml version="1.0" encoding="utf-8"?>
           <resources>
@@ -78,9 +88,6 @@ jobs:
               </style>
           </resources>
           EOF
-
-      - name: Sincronizza Capacitor
-        run: npx cap sync android
 
       - name: Build dell'applicazione
         run: |
