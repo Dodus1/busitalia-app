@@ -45,9 +45,9 @@ jobs:
           mkdir -p android/app/src/main/res/values-v31
           mkdir -p android/app/src/main/res/drawable
           
-          # Copia l'immagine splash.png corretta (generata a schermo intero) dentro la risorsa splash nativa
-          # Questo distrugge l'icona blu dell'app e la rimpiazza con il logo Busitalia su sfondo bianco
-          cp android/app/src/main/res/drawable-xxxhdpi/splash.png android/app/src/main/res/drawable/splash.png
+          # Copiamo il file splash.png originale direttamente dalla tua cartella assets del repository
+          # Questo evita l'errore "No such file or directory" e garantisce l'uso dell'immagine corretta
+          cp assets/splash.png android/app/src/main/res/drawable/splash.png
 
           # 1. Configura il tema principale (Rende l'HTML immersivo sotto il notch)
           cat << 'EOF' > android/app/src/main/res/values/styles.xml
