@@ -39,19 +39,20 @@ jobs:
       - name: Sincronizza Capacitor
         run: npx cap sync android
 
-      - name: RE-SET COMPLETAMENTE PULITO DELLE RISORSE
+      - name: RASIA AL SUOLO CONFIGURAZIONE ANDROID 12
         run: |
-          # 1. Rimuoviamo le cartelle v31 e v24 per togliere l'icona blu e lo sfondo nero/grigio
+          # 1. Cancelliamo le cartelle create da Capacitor che forzano l'icona blu quadrata
           rm -rf android/app/src/main/res/values-v31
           rm -rf android/app/src/main/res/drawable-v24
           
+          # 2. Ci assicuriamo che esistano i percorsi base
           mkdir -p android/app/src/main/res/values
           mkdir -p android/app/src/main/res/drawable
           
-          # 2. Copiamo la splash.png originale pulita nei drawable
+          # 3. Copiamo il tuo splash.png originale pulito nei drawable
           cp assets/splash.png android/app/src/main/res/drawable/splash.png
 
-          # 3. Creiamo lo splash_background (Sfondo bianco + logo busitalia centrato)
+          # 4. Creiamo il background nativo a schermo intero (Sfondo bianco + logo Busitalia centrato)
           cat << 'EOF' > android/app/src/main/res/drawable/splash_background.xml
           <?xml version="1.0" encoding="utf-8"?>
           <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
@@ -64,7 +65,8 @@ jobs:
           </layer-list>
           EOF
 
-          # 4. Riscriviamo lo stili.xml gestendo il notch in modo nativo ed evitando i crash Java
+          # 5. Sovrascriviamo COMPLETAMENTE il tuo styles.xml eliminando "Theme.SplashScreen"
+          # Sostituendolo con il background classico, l'icona blu sparisce e viene usato lo splash bianco
           cat << 'EOF' > android/app/src/main/res/values/styles.xml
           <?xml version="1.0" encoding="utf-8"?>
           <resources>
