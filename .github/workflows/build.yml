@@ -62,8 +62,7 @@ jobs:
           </layer-list>
           EOF
 
-          # 2. Riscrive lo styles.xml applicando il layer-list come sfondo del windowBackground. 
-          # Questo elimina TOTALMENTE il cerchio, il quadrato nero e l'icona dell'app.
+          # 2. Riscrive lo styles.xml applicando il layer-list come sfondo del windowBackground.
           cat << 'EOF' > android/app/src/main/res/values/styles.xml
           <?xml version="1.0" encoding="utf-8"?>
           <resources>
@@ -78,12 +77,12 @@ jobs:
               
               <style name="AppTheme.NoActionBarLaunch" parent="Theme.AppCompat.Light.NoActionBar">
                   <item name="android:windowBackground">@drawable/splash_background</item>
-                  <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</style>
+                  <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+              </style>
           </resources>
           EOF
 
           # 3. Aggiorna il file MainActivity.java per forzare il comportamento a schermo intero nativo fin dal primo millisecondo
-          # Evita che Android si rifiuti di estendere l'app sul notch all'avvio
           find android/app/src/main/java -name "MainActivity.java" -exec sed -i '/super.onCreate/i \        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {\n            getWindow().getAttributes().layoutInDisplayCutoutMode = android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;\n        }' {} \;
 
       - name: Build dell'applicazione
