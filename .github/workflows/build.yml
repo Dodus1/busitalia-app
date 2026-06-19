@@ -10,7 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    steps:
+  steps:
     - name: Checkout del codice
       uses: actions/checkout@v4
 
@@ -36,12 +36,13 @@ jobs:
     - name: Genera Icone e Splash
       run: npx capacitor-assets generate --android --assetPath assets
 
-    - name: Forza configurazione stili e puntamento a splash.png
+    - name: Forza configurazione stili e puntamento corretto
       run: |
         mkdir -p android/app/src/main/res/values
         mkdir -p android/app/src/main/res/values-v31
+        mkdir -p android/app/src/main/res/drawable
         
-        # Sostituisce lo styles.xml principale (Abilita il tutto schermo sotto il notch)
+        # 1. Configura il tema principale (Rende l'HTML immersivo sotto il notch)
         echo '<?xml version="1.0" encoding="utf-8"?>
         <resources>
             <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -60,12 +61,18 @@ jobs:
             </style>
         </resources>' > android/app/src/main/res/values/styles.xml
 
-        # Sostituisce lo styles.xml specifico per Android 12+ (Rimuove l icona app e mette lo splash)
+        # 2. Crea un layer-list per evitare il ritaglio circolare di Android 12+
+        echo '<?xml version="1.0" encoding="utf-8"?>
+        <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+            <item android:gravity="center" android:drawable="@drawable/splash" />
+        </layer-list>' > android/app/src/main/res/drawable/splash_native.xml
+
+        # 3. Specifica lo stile per Android 12+ usando il layer-list appena creato
         echo '<?xml version="1.0" encoding="utf-8"?>
         <resources>
             <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
                 <item name="windowSplashScreenBackground">#FFFFFF</item>
-                <item name="windowSplashScreenAnimatedIcon">@drawable/splash</item>
+                <item name="windowSplashScreenAnimatedIcon">@drawable/splash_native</item>
                 <item name="postSplashScreenTheme">@style/AppTheme</item>
             </style>
         </resources>' > android/app/src/main/res/values-v31/styles.xml
@@ -73,12 +80,12 @@ jobs:
     - name: Sincronizza Capacitor
       run: npx cap sync android
 
-    - name: Build dell applicazione (Generazione APK)
+    - name: Build dell''applicazione (Generazione APK)
       run: |
         cd android
         ./gradlew assembleDebug
 
-    - name: Carica l APK generato nei file della build
+    - name: Carica l''APK generato nei file della build
       uses: actions/upload-artifact@v4
       with:
         name: app-debug-apk
