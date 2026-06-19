@@ -33,36 +33,39 @@ jobs:
       - name: Aggiungi piattaforma Android
         run: npx cap add android
 
-      - name: Genera Icone e Splash Automatici
+      - name: Genera Icone Automatiche
         run: npx capacitor-assets generate --android --assetPath assets
 
       - name: Sincronizza Capacitor
         run: npx cap sync android
 
-      - name: AZZERA CONFIGURAZIONE ANDROID E FORZA SPLASH FULLSCREEN
+      - name: FORZA BG BIANCO NATIVO E RIMUOVI ICONA BLU
         run: |
-          # Elimina le cartelle dei valori che Capacitor usa per forzare le API Android 12+
+          # 1. Rimuoviamo i file XML v31 e v24 che Android usa per forzare l'icona rotonda blu
           rm -rf android/app/src/main/res/values-v31
+          rm -rf android/app/src/main/res/drawable-v24
+          
+          # 2. Ci assicuriamo che le cartelle base esistano
           mkdir -p android/app/src/main/res/values
           mkdir -p android/app/src/main/res/drawable
           
-          # Copia lo splash originale direttamente nei drawable principali
+          # 3. Copiamo la tua splash.png originale da 2732x2732 dentro le risorse drawable
           cp assets/splash.png android/app/src/main/res/drawable/splash.png
 
-          # 1. Crea un layer-list classico che prende l'intera finestra (sfondo bianco + splash centrato o fill)
+          # 4. Creiamo un background nativo: Sfondo bianco totale + logo Busitalia centrato perfettamente
           cat << 'EOF' > android/app/src/main/res/drawable/splash_background.xml
           <?xml version="1.0" encoding="utf-8"?>
-          <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+          <layer-list xmlns:android="http://schemas.github.com/apk/res/android">
               <item android:drawable="@android:color/white" />
               <item>
                   <bitmap
                       android:src="@drawable/splash"
-                      android:gravity="fill" />
+                      android:gravity="center" />
               </item>
           </layer-list>
           EOF
 
-          # 2. Riscrive lo styles.xml applicando il layer-list come sfondo del windowBackground.
+          # 5. Riscriviamo lo stili.xml forzando il background personalizzato ed eliminando i conflitti di Capacitor
           cat << 'EOF' > android/app/src/main/res/values/styles.xml
           <?xml version="1.0" encoding="utf-8"?>
           <resources>
@@ -78,11 +81,13 @@ jobs:
               <style name="AppTheme.NoActionBarLaunch" parent="Theme.AppCompat.Light.NoActionBar">
                   <item name="android:windowBackground">@drawable/splash_background</item>
                   <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+                  <item name="android:windowTranslucentStatus">true</item>
+                  <item name="android:statusBarColor">@android:color/transparent</item>
               </style>
           </resources>
           EOF
 
-          # 3. Aggiorna il file MainActivity.java per forzare il comportamento a schermo intero nativo fin dal primo millisecondo
+          # 6. Iniettiamo il comportamento Edge-to-Edge direttamente nella MainActivity.java nativa via codice
           find android/app/src/main/java -name "MainActivity.java" -exec sed -i '/super.onCreate/i \        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {\n            getWindow().getAttributes().layoutInDisplayCutoutMode = android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;\n        }' {} \;
 
       - name: Build dell'applicazione
