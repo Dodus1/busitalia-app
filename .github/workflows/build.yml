@@ -36,15 +36,21 @@ jobs:
     - name: Genera Icone e Splash
       run: npx capacitor-assets generate --android --assetPath assets
 
-    - name: Forza Splash Screen Bianco Nativo
+    - name: Genera file styles.xml (Splash corretto e Schermo Intero per Notch)
       run: |
+        mkdir -p android/app/src/main/res/values
         echo '<?xml version="1.0" encoding="utf-8"?>
         <resources>
-            <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-                <item name="colorPrimary">@color/colorPrimary</item>
-                <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-                <item name="colorAccent">@color/colorAccent</item>
+            <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+                <item name="colorPrimary">#FFFFFF</item>
+                <item name="colorPrimaryDark">#FFFFFF</item>
+                <item name="colorAccent">#000000</item>
+                
+                <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+                <item name="android:windowTranslucentStatus">true</item>
+                <item name="android:statusBarColor">@android:color/transparent</item>
             </style>
+            
             <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
                 <item name="windowSplashScreenBackground">#FFFFFF</item>
                 <item name="windowSplashScreenAnimatedIcon">@drawable/splash</item>
@@ -55,12 +61,12 @@ jobs:
     - name: Sincronizza Capacitor
       run: npx cap sync android
 
-    - name: Build dell'applicazione (Generazione APK)
+    - name: Build dell applicazione (Generazione APK)
       run: |
         cd android
         ./gradlew assembleDebug
 
-    - name: Carica l'APK generato nei file della build
+    - name: Carica l APK generato nei file della build
       uses: actions/upload-artifact@v4
       with:
         name: app-debug-apk
