@@ -265,21 +265,40 @@
             justify-content: space-between;
             align-items: center;
             width: 100%;
-            font-size: 19px;
-            font-weight: 500;
             color: #a70c30;
             padding: 0 4px;
         }
 
+        /* Forzatura allineamento centrato assoluto per entrambi i blocchi */
         .live-time, .live-code {
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
         }
 
-        .live-info-row img {
+        .live-time {
+            gap: 8px;
+            font-size: 19px;
+            font-weight: 500;
+        }
+
+        .live-time img {
             width: 20px;
             height: 20px;
+            display: block;
+        }
+
+        /* Lucchetto e codice rimpiccioliti e centrati verticalmente rispetto all'orario */
+        .live-code {
+            gap: 6px;
+            font-size: 15.5px; 
+            font-weight: 500;
+        }
+
+        .live-code img {
+            width: 15px;
+            height: 15px;
+            display: block;
         }
 
         /* Banner Verde di Validità */
@@ -425,7 +444,7 @@
                         <img class="tessera-foto" src="foto.jpeg" alt="Foto Profilo">
                     </div>
                     <div class="tessera-dati-container">
-                        <div class="tessera-nome">Domenico Di Zozza</div>
+                        <div class="tessera-nome">DOMENICO DI ZOZZA</div>
                         <div class="tessera-cf">DZZDNC06L02D122C</div>
                         
                         <div class="tessera-label">Tesserino n.</div>
@@ -470,12 +489,12 @@
         </div>
 
         <div class="validity-banner">
-            Valido dal <strong>18/05/2026</strong> a <strong>17/06/2026</strong>
+            Valido dal <strong>18/06/2026</strong> a <strong>17/07/2026</strong>
         </div>
 
         <div class="bottom-details">
             <div class="meta-label">Emesso il:</div>
-            <div class="meta-value">18/05/2026 - 15:40</div>
+            <div class="meta-value">18/06/2026 - 15:40</div>
             
             <div class="horizontal-line"></div>
             
