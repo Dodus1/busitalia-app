@@ -42,8 +42,8 @@ jobs:
           mkdir -p android/app/src/main/res/values-v31
           mkdir -p android/app/src/main/res/drawable
           
-          # 1. Configura il tema principale (Rende l'HTML immersivo sotto il notch)
-          echo '<?xml version="1.0" encoding="utf-8"?>
+          cat << 'EOF' > android/app/src/main/res/values/styles.xml
+          <?xml version="1.0" encoding="utf-8"?>
           <resources>
               <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
                   <item name="colorPrimary">#FFFFFF</item>
@@ -53,39 +53,41 @@ jobs:
                   <item name="android:windowTranslucentStatus">true</item>
                   <item name="android:statusBarColor">@android:color/transparent</item>
               </style>
-              
               <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
                   <item name="windowSplashScreenBackground">#FFFFFF</item>
                   <item name="windowSplashScreenAnimatedIcon">@drawable/splash</item>
                   <item name="postSplashScreenTheme">@style/AppTheme</item>
               </style>
-          </resources>' > android/app/src/main/res/values/styles.xml
+          </resources>
+          EOF
 
-          # 2. Crea un layer-list per evitare il ritaglio circolare di Android 12+
-          echo '<?xml version="1.0" encoding="utf-8"?>
+          cat << 'EOF' > android/app/src/main/res/drawable/splash_native.xml
+          <?xml version="1.0" encoding="utf-8"?>
           <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
               <item android:gravity="center" android:drawable="@drawable/splash" />
-          </layer-list>' > android/app/src/main/res/drawable/splash_native.xml
+          </layer-list>
+          EOF
 
-          # 3. Specifica lo stile per Android 12+ usando il layer-list appena creato
-          echo '<?xml version="1.0" encoding="utf-8"?>
+          cat << 'EOF' > android/app/src/main/res/values-v31/styles.xml
+          <?xml version="1.0" encoding="utf-8"?>
           <resources>
               <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
                   <item name="windowSplashScreenBackground">#FFFFFF</item>
                   <item name="windowSplashScreenAnimatedIcon">@drawable/splash_native</item>
                   <item name="postSplashScreenTheme">@style/AppTheme</item>
               </style>
-          </resources>' > android/app/src/main/res/values-v31/styles.xml
+          </resources>
+          EOF
 
       - name: Sincronizza Capacitor
         run: npx cap sync android
 
-      - name: Build dell'applicazione (Generazione APK)
+      - name: Build dell'applicazione
         run: |
           cd android
           ./gradlew assembleDebug
 
-      - name: Carica l'APK generato nei file della build
+      - name: Carica l'APK generato
         uses: actions/upload-artifact@v4
         with:
           name: app-debug-apk
