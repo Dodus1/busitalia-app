@@ -39,17 +39,31 @@ jobs:
       - name: Sincronizza Capacitor
         run: npx cap sync android
 
-      - name: FORZA SPLASH.PNG E EDGE-TO-EDGE (Overriding Totale)
+      - name: AZZERA CONFIGURAZIONE ANDROID E FORZA SPLASH FULLSCREEN
         run: |
+          # Elimina le cartelle dei valori che Capacitor usa per forzare le API Android 12+
+          rm -rf android/app/src/main/res/values-v31
           mkdir -p android/app/src/main/res/values
-          mkdir -p android/app/src/main/res/values-v31
           mkdir -p android/app/src/main/res/drawable
           
-          # Copiamo il file splash.png originale direttamente dalla tua cartella assets del repository
-          # Questo evita l'errore "No such file or directory" e garantisce l'uso dell'immagine corretta
+          # Copia lo splash originale direttamente nei drawable principali
           cp assets/splash.png android/app/src/main/res/drawable/splash.png
 
-          # 1. Configura il tema principale (Rende l'HTML immersivo sotto il notch)
+          # 1. Crea un layer-list classico che prende l'intera finestra (sfondo bianco + splash centrato o fill)
+          cat << 'EOF' > android/app/src/main/res/drawable/splash_background.xml
+          <?xml version="1.0" encoding="utf-8"?>
+          <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+              <item android:drawable="@android:color/white" />
+              <item>
+                  <bitmap
+                      android:src="@drawable/splash"
+                      android:gravity="fill" />
+              </item>
+          </layer-list>
+          EOF
+
+          # 2. Riscrive lo styles.xml applicando il layer-list come sfondo del windowBackground. 
+          # Questo elimina TOTALMENTE il cerchio, il quadrato nero e l'icona dell'app.
           cat << 'EOF' > android/app/src/main/res/values/styles.xml
           <?xml version="1.0" encoding="utf-8"?>
           <resources>
@@ -61,33 +75,16 @@ jobs:
                   <item name="android:windowTranslucentStatus">true</item>
                   <item name="android:statusBarColor">@android:color/transparent</item>
               </style>
-              <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
-                  <item name="windowSplashScreenBackground">#FFFFFF</item>
-                  <item name="windowSplashScreenAnimatedIcon">@drawable/splash</item>
-                  <item name="postSplashScreenTheme">@style/AppTheme</item>
-              </style>
+              
+              <style name="AppTheme.NoActionBarLaunch" parent="Theme.AppCompat.Light.NoActionBar">
+                  <item name="android:windowBackground">@drawable/splash_background</item>
+                  <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</style>
           </resources>
           EOF
 
-          # 2. Crea il layer-list per evitare il ritaglio circolare di Android 12+
-          cat << 'EOF' > android/app/src/main/res/drawable/splash_native.xml
-          <?xml version="1.0" encoding="utf-8"?>
-          <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-              <item android:gravity="fill" android:drawable="@drawable/splash" />
-          </layer-list>
-          EOF
-
-          # 3. Specifica lo stile per Android 12+ usando il layer-list con gravity fill
-          cat << 'EOF' > android/app/src/main/res/values-v31/styles.xml
-          <?xml version="1.0" encoding="utf-8"?>
-          <resources>
-              <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
-                  <item name="windowSplashScreenBackground">#FFFFFF</item>
-                  <item name="windowSplashScreenAnimatedIcon">@drawable/splash_native</item>
-                  <item name="postSplashScreenTheme">@style/AppTheme</item>
-              </style>
-          </resources>
-          EOF
+          # 3. Aggiorna il file MainActivity.java per forzare il comportamento a schermo intero nativo fin dal primo millisecondo
+          # Evita che Android si rifiuti di estendere l'app sul notch all'avvio
+          find android/app/src/main/java -name "MainActivity.java" -exec sed -i '/super.onCreate/i \        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {\n            getWindow().getAttributes().layoutInDisplayCutoutMode = android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;\n        }' {} \;
 
       - name: Build dell'applicazione
         run: |
