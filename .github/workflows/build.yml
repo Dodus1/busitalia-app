@@ -39,21 +39,21 @@ jobs:
       - name: Sincronizza Capacitor
         run: npx cap sync android
 
-      - name: Fix Radicale Splash Screen Android 12
+      - name: Distruzione e Ricostruzione Splash Screen
         run: |
-          # 1. Crea le cartelle necessarie se non esistono
-          mkdir -p android/app/src/main/res/drawable
-          mkdir -p android/app/src/main/res/values
-          mkdir -p android/app/src/main/res/values-v31
-          
-          # 2. Rimuove l'icona di default di capacitor che interferisce con il vecchio splash
+          # 1. Rimuoviamo COMPLETAMENTE le configurazioni automatiche che forzano Android 12 a usare l'icona
+          rm -rf android/app/src/main/res/values-v31
           rm -f android/app/src/main/res/drawable/splash.png
           
-          # 3. Copia il tuo splash originale da 2732x2732 nella cartella drawable
+          # 2. Creiamo le cartelle pulite
+          mkdir -p android/app/src/main/res/drawable
+          mkdir -p android/app/src/main/res/values
+
+          # 3. Copiamo la tua splash.png gigante (2732x2732)
           cp assets/splash.png android/app/src/main/res/drawable/splash.png
 
-          # 4. CREA IL LIVELLO NATIVO: Sfondo bianco + Immagine Centrata Correttamente
-          cat << 'EOF' > android/app/src/main/res/drawable/splash_screen_native.xml
+          # 4. Creiamo il background classico: Sfondo bianco + immagine splash centrata a schermo intero
+          cat << 'EOF' > android/app/src/main/res/drawable/splash_background.xml
           <?xml version="1.0" encoding="utf-8"?>
           <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
               <item android:drawable="@android:color/white" />
@@ -65,9 +65,34 @@ jobs:
           </layer-list>
           EOF
 
-          # 5. Sovrascrive gli stili sia per i vecchi Android che per Android 12+ (-v31)
-          cp assets/android/styles.xml android/app/src/main/res/values/styles.xml
-          cp assets/android/styles.xml android/app/src/main/res/values-v31/styles.xml
+          # 5. Sovrascriviamo lo styles.xml eliminando qualsiasi riferimento a Theme.SplashScreen (che è quello che rompe)
+          cat << 'EOF' > android/app/src/main/res/values/styles.xml
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources>
+              <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+                  <item name="colorPrimary">#FFFFFF</item>
+                  <item name="colorPrimaryDark">#FFFFFF</item>
+                  <item name="colorAccent">#000000</item>
+                  <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+                  <item name="android:windowTranslucentStatus">true</item>
+                  <item name="android:windowTranslucentNavigation">true</item>
+                  <item name="android:statusBarColor">@android:color/transparent</item>
+              </style>
+
+              <style name="AppTheme.NoActionBarLaunch" parent="Theme.AppCompat.Light.NoActionBar">
+                  <item name="android:windowBackground">@drawable/splash_background</item>
+                  <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+                  <item name="android:windowTranslucentStatus">true</item>
+                  <item name="android:windowTranslucentNavigation">true</item>
+                  <item name="android:statusBarColor">@android:color/transparent</item>
+              </style>
+          </resources>
+          EOF
+
+          # 6. TRUCCO FINALE: Diciamo al codice Java di Capacitor di NON usare il LaunchTimeline di Android 12
+          # Questo impedisce al sistema operativo di schiaffare l'icona quadrata al centro.
+          SED_SCRIPT='s/<activity/<activity android:exported="true"/g'
+          sed -i 's/android:theme="@style\/AppTheme.NoActionBarLaunch"/android:theme="@style\/AppTheme.NoActionBarLaunch"/g' android/app/src/main/AndroidManifest.xml
 
       - name: Build dell'applicazione
         run: |
