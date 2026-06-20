@@ -15,7 +15,7 @@
     <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">#FFFFFF</item>
         
-        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_screen_native</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash</item>
         
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
         <item name="android:windowTranslucentStatus">true</item>
