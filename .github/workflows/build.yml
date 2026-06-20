@@ -39,17 +39,33 @@ jobs:
       - name: Sincronizza Capacitor
         run: npx cap sync android
 
-      - name: Configurazione Asset e Stili Nativi
+      - name: Fix Radicale Splash Screen Android 12
         run: |
-          # 1. Ci assicuriamo che esistano i percorsi di destinazione
+          # 1. Crea le cartelle necessarie se non esistono
           mkdir -p android/app/src/main/res/drawable
           mkdir -p android/app/src/main/res/values
           mkdir -p android/app/src/main/res/values-v31
           
-          # 2. Copiamo la splash.png originale pulita nei drawable
+          # 2. Rimuove l'icona di default di capacitor che interferisce con il vecchio splash
+          rm -f android/app/src/main/res/drawable/splash.png
+          
+          # 3. Copia il tuo splash originale da 2732x2732 nella cartella drawable
           cp assets/splash.png android/app/src/main/res/drawable/splash.png
 
-          # 3. Copiamo lo styles.xml corretto sovrascrivendo quelli generati di default
+          # 4. CREA IL LIVELLO NATIVO: Sfondo bianco + Immagine Centrata Correttamente
+          cat << 'EOF' > android/app/src/main/res/drawable/splash_screen_native.xml
+          <?xml version="1.0" encoding="utf-8"?>
+          <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+              <item android:drawable="@android:color/white" />
+              <item>
+                  <bitmap
+                      android:src="@drawable/splash"
+                      android:gravity="center" />
+              </item>
+          </layer-list>
+          EOF
+
+          # 5. Sovrascrive gli stili sia per i vecchi Android che per Android 12+ (-v31)
           cp assets/android/styles.xml android/app/src/main/res/values/styles.xml
           cp assets/android/styles.xml android/app/src/main/res/values-v31/styles.xml
 
