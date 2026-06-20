@@ -39,54 +39,19 @@ jobs:
       - name: Sincronizza Capacitor
         run: npx cap sync android
 
-      - name: RASIA AL SUOLO CONFIGURAZIONE ANDROID 12
+      - name: Configurazione Asset e Stili Nativi
         run: |
-          # 1. Cancelliamo le cartelle create da Capacitor che forzano l'icona blu quadrata
-          rm -rf android/app/src/main/res/values-v31
-          rm -rf android/app/src/main/res/drawable-v24
-          
-          # 2. Ci assicuriamo che esistano i percorsi base
-          mkdir -p android/app/src/main/res/values
+          # 1. Ci assicuriamo che esistano i percorsi di destinazione
           mkdir -p android/app/src/main/res/drawable
+          mkdir -p android/app/src/main/res/values
+          mkdir -p android/app/src/main/res/values-v31
           
-          # 3. Copiamo il tuo splash.png originale pulito nei drawable
+          # 2. Copiamo la splash.png originale pulita nei drawable
           cp assets/splash.png android/app/src/main/res/drawable/splash.png
 
-          # 4. Creiamo il background nativo a schermo intero (Sfondo bianco + logo Busitalia centrato)
-          cat << 'EOF' > android/app/src/main/res/drawable/splash_background.xml
-          <?xml version="1.0" encoding="utf-8"?>
-          <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-              <item android:drawable="@android:color/white" />
-              <item>
-                  <bitmap
-                      android:src="@drawable/splash"
-                      android:gravity="center" />
-              </item>
-          </layer-list>
-          EOF
-
-          # 5. Sovrascriviamo COMPLETAMENTE il tuo styles.xml eliminando "Theme.SplashScreen"
-          # Sostituendolo con il background classico, l'icona blu sparisce e viene usato lo splash bianco
-          cat << 'EOF' > android/app/src/main/res/values/styles.xml
-          <?xml version="1.0" encoding="utf-8"?>
-          <resources>
-              <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-                  <item name="colorPrimary">#FFFFFF</item>
-                  <item name="colorPrimaryDark">#FFFFFF</item>
-                  <item name="colorAccent">#000000</item>
-                  <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
-                  <item name="android:windowTranslucentStatus">true</item>
-                  <item name="android:statusBarColor">@android:color/transparent</item>
-              </style>
-              
-              <style name="AppTheme.NoActionBarLaunch" parent="Theme.AppCompat.Light.NoActionBar">
-                  <item name="android:windowBackground">@drawable/splash_background</item>
-                  <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
-                  <item name="android:windowTranslucentStatus">true</item>
-                  <item name="android:statusBarColor">@android:color/transparent</item>
-              </style>
-          </resources>
-          EOF
+          # 3. Copiamo lo styles.xml corretto sovrascrivendo quelli generati di default
+          cp assets/android/styles.xml android/app/src/main/res/values/styles.xml
+          cp assets/android/styles.xml android/app/src/main/res/values-v31/styles.xml
 
       - name: Build dell'applicazione
         run: |
