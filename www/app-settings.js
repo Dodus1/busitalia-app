@@ -100,33 +100,31 @@
   function installSecretButton() {
     if (!/index\.html$|\/$/.test(location.pathname)) return;
     const secondPromo = document.querySelector('#promoCarousel .promo-banner:nth-child(2)');
-    if (!secondPromo || secondPromo.querySelector('.secret-settings-hotspot')) return;
+    if (!secondPromo || secondPromo.dataset.secretSettingsInstalled === '1') return;
 
-    secondPromo.style.position = 'relative';
-    const hotspot = document.createElement('button');
-    hotspot.type = 'button';
-    hotspot.className = 'secret-settings-hotspot';
-    hotspot.setAttribute('aria-label', '');
-    Object.assign(hotspot.style, {
-      position: 'absolute',
-      right: '0',
-      bottom: '0',
-      width: '58px',
-      height: '58px',
-      border: '0',
-      padding: '0',
-      margin: '0',
-      opacity: '0',
-      background: 'transparent',
-      zIndex: '8',
-      cursor: 'default'
+    secondPromo.dataset.secretSettingsInstalled = '1';
+
+    let tapCount = 0;
+    let firstTapAt = 0;
+    const TAP_WINDOW_MS = 2200;
+    const REQUIRED_TAPS = 5;
+
+    secondPromo.addEventListener('click', () => {
+      const now = Date.now();
+
+      if (!firstTapAt || now - firstTapAt > TAP_WINDOW_MS) {
+        tapCount = 1;
+        firstTapAt = now;
+      } else {
+        tapCount += 1;
+      }
+
+      if (tapCount >= REQUIRED_TAPS) {
+        tapCount = 0;
+        firstTapAt = 0;
+        location.href = 'settings.html';
+      }
     });
-    hotspot.addEventListener('click', (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      location.href = 'settings.html';
-    });
-    secondPromo.appendChild(hotspot);
   }
 
   function apply() {
