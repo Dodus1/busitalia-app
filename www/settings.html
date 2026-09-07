@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Impostazioni</title>
+  <style>
+    @font-face{font-family:'Jost';src:url('Jost-Regular.ttf') format('truetype');font-weight:400}
+    @font-face{font-family:'Jost';src:url('Jost-SemiBold.ttf') format('truetype');font-weight:600}
+    @font-face{font-family:'Jost';src:url('Jost-Bold.ttf') format('truetype');font-weight:700}
+    *{box-sizing:border-box;margin:0;padding:0;font-family:'Jost',sans-serif;-webkit-tap-highlight-color:transparent}
+    body{background:#f5f5f7;color:#1c1c1e;max-width:480px;margin:0 auto;min-height:100vh;padding:env(safe-area-inset-top) 0 calc(env(safe-area-inset-bottom) + 30px)}
+    header{position:sticky;top:0;background:#fff;border-bottom:1px solid #e4e4e5;padding:14px 16px;display:flex;align-items:center;z-index:10}
+    header a{text-decoration:none;color:#a70c30;font-size:16px;font-weight:600;width:70px}
+    header h1{font-size:19px;text-align:center;flex:1;color:#a70c30}
+    header .spacer{width:70px}
+    main{padding:18px 14px}
+    .section{background:#fff;border-radius:14px;margin-bottom:16px;overflow:hidden;border:1px solid #e8e8ea}
+    .section-title{font-size:13px;font-weight:700;color:#7c7c80;text-transform:uppercase;padding:14px 14px 8px}
+    .row{padding:11px 14px;border-top:1px solid #efeff1}
+    .row:first-of-type{border-top:0}
+    label{display:block;font-size:13px;color:#6c6c70;margin-bottom:5px}
+    input{width:100%;border:1px solid #dadadd;border-radius:9px;padding:10px 11px;font-size:16px;color:#1c1c1e;background:#fff}
+    input[type=file]{font-size:13px;padding:8px}
+    .image-row{display:grid;grid-template-columns:82px 1fr;gap:12px;align-items:center}
+    .preview{width:82px;height:82px;border-radius:10px;background:#f1f1f3;border:1px solid #dedee1;object-fit:cover}
+    .preview.round{border-radius:50%}
+    .hint{font-size:12px;color:#8e8e93;margin-top:5px;line-height:1.3}
+    .actions{display:grid;gap:10px;margin-top:20px}
+    button{border:0;border-radius:11px;padding:13px 16px;font-size:16px;font-weight:700;cursor:pointer}
+    .save{background:#a70c30;color:#fff}
+    .reset{background:#fff;color:#a70c30;border:1px solid #d8d8da}
+    .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#1c1c1e;color:#fff;padding:10px 18px;border-radius:20px;font-size:14px;opacity:0;pointer-events:none;transition:.2s;z-index:20}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  </style>
+</head>
+<body>
+  <header><a href="index.html">‹ Home</a><h1>Impostazioni</h1><div class="spacer"></div></header>
+  <main>
+    <section class="section">
+      <div class="section-title">Dati personali</div>
+      <div class="row"><label for="firstName">Nome</label><input id="firstName" type="text"></div>
+      <div class="row"><label for="lastName">Cognome</label><input id="lastName" type="text"></div>
+      <div class="row"><label for="age">Età</label><input id="age" type="number" min="0" max="120"></div>
+      <div class="row"><label for="fiscalCode">Codice fiscale</label><input id="fiscalCode" type="text" maxlength="16"></div>
+      <div class="row"><label for="cardNumber">Numero tesserino</label><input id="cardNumber" type="text"></div>
+      <div class="row"><label for="cardExpiry">Scadenza tesserino</label><input id="cardExpiry" type="date"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">Ticket</div>
+      <div class="row"><label for="ticketName">Nome ticket</label><input id="ticketName" type="text"></div>
+      <div class="row"><label for="validFrom">Valido dal</label><input id="validFrom" type="date"></div>
+      <div class="row"><label for="validTo">Valido fino al</label><input id="validTo" type="date"></div>
+      <div class="row"><label for="issuedAt">Emesso il</label><input id="issuedAt" type="datetime-local"></div>
+      <div class="row"><label for="price">Costo</label><input id="price" type="text"></div>
+      <div class="row"><label for="ticketCode">Codice ticket</label><input id="ticketCode" type="text"></div>
+      <div class="row"><label for="lockCode">Codice lucchetto</label><input id="lockCode" type="text"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">Immagini</div>
+      <div class="row image-row">
+        <img id="cardPhotoPreview" class="preview" src="foto.jpeg" alt="Anteprima foto tessera">
+        <div><label for="cardPhotoInput">Foto tessera</label><input id="cardPhotoInput" type="file" accept="image/*"><div class="hint">Viene ridimensionata e salvata sul dispositivo.</div></div>
+      </div>
+      <div class="row image-row">
+        <img id="navPhotoPreview" class="preview round" src="profilo.jpg" alt="Anteprima profilo">
+        <div><label for="navPhotoInput">Foto profilo in basso a destra</label><input id="navPhotoInput" type="file" accept="image/*"></div>
+      </div>
+      <div class="row image-row">
+        <img id="qrPhotoPreview" class="preview" src="qr.png" alt="Anteprima QR">
+        <div><label for="qrPhotoInput">Immagine QR</label><input id="qrPhotoInput" type="file" accept="image/*"></div>
+      </div>
+    </section>
+
+    <div class="actions">
+      <button class="save" id="saveBtn">Salva modifiche</button>
+      <button class="reset" id="resetBtn">Ripristina valori originali</button>
+    </div>
+  </main>
+  <div class="toast" id="toast">Salvato</div>
+
+  <script src="app-settings.js"></script>
+  <script>
+    const api = window.BusitaliaSettings;
+    const textFields = ['firstName','lastName','age','fiscalCode','cardNumber','cardExpiry','ticketName','validFrom','validTo','issuedAt','price','ticketCode','lockCode'];
+    let state = api.loadSettings();
+
+    function fillForm() {
+      textFields.forEach(id => document.getElementById(id).value = state[id] || '');
+      document.getElementById('cardPhotoPreview').src = state.cardPhoto || 'foto.jpeg';
+      document.getElementById('navPhotoPreview').src = state.navPhoto || 'profilo.jpg';
+      document.getElementById('qrPhotoPreview').src = state.qrPhoto || 'qr.png';
+    }
+
+    function resizeImage(file, maxSide, quality = 0.84) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = reject;
+        reader.onload = () => {
+          const img = new Image();
+          img.onerror = reject;
+          img.onload = () => {
+            const scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.max(1, Math.round(img.width * scale));
+            canvas.height = Math.max(1, Math.round(img.height * scale));
+            canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          };
+          img.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function bindImage(inputId, key, previewId, maxSide) {
+      document.getElementById(inputId).addEventListener('change', async event => {
+        const file = event.target.files && event.target.files[0];
+        if (!file) return;
+        try {
+          state[key] = await resizeImage(file, maxSide);
+          document.getElementById(previewId).src = state[key];
+        } catch (_) {
+          alert('Impossibile leggere questa immagine.');
+        }
+      });
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 1400);
+    }
+
+    document.getElementById('saveBtn').addEventListener('click', () => {
+      textFields.forEach(id => state[id] = document.getElementById(id).value.trim());
+      try {
+        localStorage.setItem(api.STORAGE_KEY, JSON.stringify(state));
+        showToast('Modifiche salvate');
+      } catch (_) {
+        alert('Memoria piena: prova con immagini più piccole.');
+      }
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      if (!confirm('Ripristinare tutti i valori originali?')) return;
+      localStorage.removeItem(api.STORAGE_KEY);
+      state = api.loadSettings();
+      fillForm();
+      showToast('Valori ripristinati');
+    });
+
+    bindImage('cardPhotoInput','cardPhoto','cardPhotoPreview',700);
+    bindImage('navPhotoInput','navPhoto','navPhotoPreview',256);
+    bindImage('qrPhotoInput','qrPhoto','qrPhotoPreview',800);
+    fillForm();
+  </script>
+</body>
+</html>
